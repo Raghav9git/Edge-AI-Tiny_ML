@@ -2,41 +2,53 @@
 
 ## Overview
 
-This folder introduces the transition from simple machine learning models to **neural networks**.
+This folder documents the progression from simple neural networks to **multi-layer networks and Convolutional Neural Networks (CNNs)** using Python, TensorFlow, and Keras.
 
-The projects demonstrate two stages:
+The implementations cover three areas:
 
-1. A simple neural network learning a mathematical relationship.
-2. A multi-layer neural network performing image classification using the MNIST handwritten-digit dataset.
+1. **Regression:** Learning mathematical relationships using single-layer and multi-layer neural networks.
+2. **Classification:** Recognizing handwritten digits using the MNIST dataset.
+3. **Convolutional Neural Networks:** Classifying clothing images using the Fashion-MNIST dataset.
 
-The goal is to understand how neurons, layers, activation functions, loss functions, and training work together to solve increasingly complex problems.
+The goal is to understand how neurons, layers, activation functions, loss functions, optimizers, and training work together to solve increasingly complex machine-learning problems.
 
----
-
-# Project Structure
+## Project Structure
 
 ```text
 03_Neural_Networks/
-├── first_neural_network.py
-├── mnist_classification.py
+├── Regression/
+│   ├── first_regression_NN.py
+│   ├── multilayer_single_input_nn_regression.py
+│   └── multilayer_multi_input_nn_regression.py
+│
+├── Classification/
+│   ├── mnist_classification.py
+│   ├── Predicted_labels.png
+│   └── Sample_labels.png
+│
+├── CNN/
+│   ├── fashin_mnist_cnn.py
+│   ├── fashion_mnist_predictions.png
+│   ├── fashion_mnist_training_accuracy.png
+│   ├── CNN code.pdf
+│   └── intro to cnn.pdf
+│
 └── README.md
 ```
 
----
+## Part 1 — Regression
 
-# Part 1 — First Neural Network
+### Objective
 
-## Objective
+The regression implementations demonstrate how neural networks learn relationships between numerical inputs and outputs.
 
-The first project teaches the basic structure of a neural network using a very small dataset.
-
-The data follows:
+The initial example uses data following:
 
 ```text
 y = 2x - 1
 ```
 
-Example:
+Examples:
 
 ```text
 x = 0  →  y = -1
@@ -45,110 +57,57 @@ x = 2  →  y = 3
 x = 3  →  y = 5
 ```
 
-The network learns this relationship from examples rather than being explicitly told the equation.
+The network learns to approximate this relationship from examples rather than being explicitly given the equation.
 
----
+### Implementations
 
-## Model
+**First Neural Network**
 
-The network contains one Dense neuron:
+Implements a single-layer neural network that learns a linear relationship.
 
-```python
-tf.keras.layers.Dense(
-    units=1,
-    input_shape=[1]
-)
-```
+**Multi-Layer Single-Input Neural Network**
 
-The neuron learns a weight and bias that allow it to approximate:
+Uses a hidden layer to learn a mapping from one input variable to a continuous output.
 
-```text
-y = wx + b
-```
+**Multi-Layer Multi-Input Neural Network**
 
----
+Accepts two input variables and learns their relationship with a continuous output.
 
-## Dense Layer
+### Dense Layer
 
-A **Dense layer** is a neural-network layer in which neurons are connected to the outputs of the previous layer.
+A **Dense layer** is a neural-network layer in which each neuron is connected to the outputs of the previous layer.
 
-Each connection has a weight.
+Each connection has a trainable weight, and each neuron has a bias.
 
-A neuron combines its inputs using these weights and a bias before applying its activation function.
+### Weight
 
----
+A **weight** controls how strongly an input contributes to a neuron's output. During training, weights are adjusted to reduce the loss.
 
-## Weight
+### Bias
 
-A **weight** controls how strongly an input contributes to a neuron's output.
+A **bias** is a trainable value added to the weighted input. It allows a neuron to shift its output independently of its inputs.
 
-During training, the weights are adjusted to reduce the loss.
+### Loss Function
 
----
+The regression implementations use **Mean Squared Error (MSE)** to measure the difference between predicted and actual numerical values.
 
-## Bias
+### Optimizer
 
-A **bias** is an additional trainable value added to the weighted input.
+An **optimizer** updates the model's trainable parameters during training. The first neural-network implementation uses Stochastic Gradient Descent (SGD).
 
-It allows the neuron to shift its output independently of the input.
+## Part 2 — MNIST Classification
 
----
+### Objective
 
-## Optimizer
+Classification assigns an input to one of several predefined categories.
 
-An **optimizer** is the algorithm responsible for updating trainable model parameters during training.
+The MNIST implementation recognizes handwritten digits from `0` to `9`.
 
-The first neural-network project uses:
+### MNIST Dataset
 
-```text
-SGD
-```
+MNIST contains grayscale images of handwritten digits.
 
-which means **Stochastic Gradient Descent**.
-
-The optimizer uses gradient information to modify the model parameters so that the loss decreases.
-
----
-
-## Loss
-
-The first project uses:
-
-```text
-Mean Squared Error
-```
-
-because the task is regression.
-
-The loss measures how far the model's predictions are from the target values.
-
----
-
-# Part 2 — MNIST Classification
-
-## Objective
-
-The second project introduces **classification**.
-
-Instead of predicting a continuous numerical value, the model must determine which category an input belongs to.
-
-The example is handwritten-digit recognition.
-
-The possible classes are:
-
-```text
-0 1 2 3 4 5 6 7 8 9
-```
-
-Therefore, the model has 10 possible output classes.
-
----
-
-# MNIST Dataset
-
-**MNIST** is a dataset of handwritten digits.
-
-Each image has:
+Each image has dimensions of:
 
 ```text
 28 × 28 pixels
@@ -156,154 +115,64 @@ Each image has:
 
 The dataset contains:
 
-```text
-60,000 training examples
-10,000 test/validation examples
-```
+* 60,000 training images
+* 10,000 test images
 
-Each image has a corresponding label identifying the digit represented in the image.
+Each image has a corresponding label identifying the digit it represents.
 
----
+### Pixel and Normalization
 
-# Pixel
+A **pixel** is a small element of an image. Each MNIST pixel initially has an intensity value between `0` and `255`.
 
-A **pixel** is one small element of an image.
+The images are normalized by dividing the pixel values by `255.0`, converting them to the range `0–1`.
 
-MNIST images contain:
+Normalization places the input values on a convenient numerical scale for training.
 
-```text
-28 × 28 = 784 pixels
-```
+### Flatten
 
-Each pixel initially contains a value between:
+A `Flatten` layer converts a two-dimensional image into a one-dimensional sequence of values.
 
 ```text
-0 and 255
+28 × 28 pixels
+       ↓
+   784 values
 ```
 
-representing its grayscale intensity.
+Flattening changes the arrangement of the data, not its pixel values.
 
----
+### Model Architecture
 
-# Normalization
-
-The images are divided by:
+The MNIST classifier uses the following architecture:
 
 ```text
-255.0
+Input Image (28 × 28)
+         |
+         v
+      Flatten
+         |
+         v
+Dense Layer (20 neurons, ReLU)
+         |
+         v
+Dense Layer (10 neurons, Softmax)
+         |
+         v
+Predicted Digit (0–9)
 ```
 
-This converts the pixel values from:
+### Hidden Layer
 
-```text
-0–255
-```
+A **hidden layer** is a layer between the input and output layers.
 
-to approximately:
+The MNIST model uses 20 neurons in its hidden Dense layer to learn intermediate patterns from the input data.
 
-```text
-0–1
-```
+### Activation Function
 
-This process is called **normalization**.
+An **activation function** determines a neuron's output after its weighted input and bias have been calculated.
 
-Normalization puts numerical inputs into a more convenient scale for machine-learning algorithms.
+Activation functions introduce non-linearity, allowing neural networks to learn more complex relationships.
 
----
-
-# Flatten
-
-An MNIST image starts as a two-dimensional array:
-
-```text
-28 × 28
-```
-
-A Dense layer receives a one-dimensional sequence of values.
-
-The `Flatten` layer converts:
-
-```text
-28 × 28
-```
-
-into:
-
-```text
-784
-```
-
-values.
-
-It does not change the pixel values. It only changes their arrangement.
-
----
-
-# Neural Network Architecture
-
-The MNIST model uses:
-
-```text
-Input
-  ↓
-Flatten
-  ↓
-Dense(20, ReLU)
-  ↓
-Dense(10, Softmax)
-  ↓
-Output
-```
-
----
-
-# Hidden Layer
-
-A **hidden layer** is a neural-network layer between the input and output.
-
-The MNIST model contains one hidden Dense layer:
-
-```text
-20 neurons
-```
-
-The hidden layer learns intermediate patterns from the input data.
-
----
-
-# Neuron
-
-A **neuron** receives inputs, combines them using learned weights and a bias, and produces an output.
-
-Conceptually:
-
-```text
-inputs
-  ↓
-weighted combination
-  ↓
-activation function
-  ↓
-output
-```
-
-A neural network combines many neurons to learn increasingly useful representations of data.
-
----
-
-# Activation Function
-
-An **activation function** determines the output produced by a neuron after its weighted input and bias have been calculated.
-
-Activation functions are important because they introduce **non-linearity** into neural networks.
-
-Without useful non-linear transformations, stacking multiple linear operations would still behave like a linear transformation.
-
----
-
-# ReLU
-
-The hidden layer uses **ReLU**:
+**ReLU** is defined as:
 
 ```text
 ReLU(x) = max(0, x)
@@ -312,406 +181,319 @@ ReLU(x) = max(0, x)
 Therefore:
 
 ```text
-negative input → 0
-positive input → input
-```
-
-For example:
-
-```text
 ReLU(-3) = 0
 ReLU(2)  = 2
 ```
 
-The MNIST model uses:
+The MNIST model uses ReLU in its hidden layer.
+
+### Softmax
+
+The output layer contains 10 neurons, one for each digit class.
+
+The **Softmax** activation function converts the output values into probabilities that sum to approximately `1.0`.
+
+The class with the highest probability is selected as the predicted digit.
+
+### Loss Function and Optimizer
+
+The classifier uses:
+
+* **Sparse categorical cross-entropy:** Measures classification error when labels are integer class IDs.
+* **Adam:** Updates the model parameters using gradient information during training.
+
+### Prediction and Accuracy
+
+The model generates a probability for each digit class. NumPy's `argmax()` identifies the index of the highest probability, giving the predicted digit.
+
+**Accuracy** measures the proportion of correctly classified images.
+
+The implementation also displays sample images and compares predicted labels with actual labels.
+
+## Part 3 — Convolutional Neural Networks (CNNs)
+
+### Objective
+
+This implementation introduces **Convolutional Neural Networks (CNNs)** for image classification using the Fashion-MNIST dataset.
+
+Unlike a basic Dense network, a CNN uses convolutional filters to learn spatial features from images, such as edges, shapes, and textures.
+
+### Fashion-MNIST Dataset
+
+Fashion-MNIST contains 70,000 grayscale images of clothing items across 10 categories.
+
+Each image has dimensions of `28 × 28` pixels.
+
+The dataset contains:
+
+* 60,000 training images
+* 10,000 test images
+
+The categories include T-shirts, trousers, pullovers, dresses, coats, sandals, shirts, sneakers, bags, and ankle boots.
+
+### Image Preprocessing
+
+The images undergo two preprocessing operations:
+
+**Normalization:** Pixel values are converted from `0–255` to `0–1`.
+
+**Channel dimension:** A final dimension is added to represent the single grayscale channel.
+
+The resulting input shape is:
+
+```text
+(number of images, 28, 28, 1)
+```
+
+### CNN Architecture
+
+The Fashion-MNIST classifier uses two convolutional layers, two max-pooling layers, and two Dense layers.
+
+```text
+Input Image (28 × 28 × 1)
+          |
+          v
+Conv2D (64 filters, 3 × 3, ReLU)
+          |
+          v
+MaxPooling2D (2 × 2)
+          |
+          v
+Conv2D (64 filters, 3 × 3, ReLU)
+          |
+          v
+MaxPooling2D (2 × 2)
+          |
+          v
+        Flatten
+          |
+          v
+Dense (128 neurons, ReLU)
+          |
+          v
+Dense (10 neurons, Softmax)
+          |
+          v
+Predicted Clothing Category
+```
+
+### Convolution
+
+A **convolutional layer** applies learnable filters across an image or feature map.
+
+Each filter processes small regions of the input and learns to respond to useful visual patterns.
+
+`Conv2D(64, (3, 3))` specifies 64 filters, each with a spatial size of `3 × 3`.
+
+### Feature Maps
+
+A **feature map** is produced when a convolutional filter processes an input.
+
+Different filters can learn to detect different visual patterns. Deeper layers can combine simpler features into more complex representations.
+
+### Max Pooling
+
+`MaxPooling2D((2, 2))` divides a feature map into small regions and retains the maximum value from each region.
+
+This reduces the spatial dimensions of the feature maps, decreasing the amount of data passed to subsequent layers.
+
+### Flatten and Dense Layers
+
+The `Flatten` layer converts the final feature maps into a one-dimensional vector.
+
+The Dense layer with 128 neurons learns combinations of the extracted features. The final Dense layer contains 10 neurons, corresponding to the 10 clothing categories.
+
+### Training Configuration
+
+The CNN uses:
+
+* **Adam:** Optimizer for updating trainable parameters.
+* **Sparse categorical cross-entropy:** Loss function for integer-labelled, multi-class classification.
+* **Softmax:** Output activation that produces class probabilities.
+* **Accuracy:** Metric for measuring correct predictions.
+* **Early stopping:** Callback used to stop training when validation loss stops improving.
+
+### Training and Evaluation
+
+The initial 10-epoch experiment achieved approximately **90.07% test accuracy**.
+
+A subsequent 50-epoch experiment produced approximately:
+
+| Metric            | Result |
+| ----------------- | -----: |
+| Training accuracy |  99.3% |
+| Test accuracy     |  90.5% |
+
+These results demonstrate a gap between training and test performance.
+
+### Overfitting
+
+**Overfitting** occurs when a model learns its training examples very well but fails to achieve comparable performance on unseen data.
+
+In the 50-epoch experiment, training accuracy continued to rise while test accuracy remained around 90–91%.
+
+This indicated that additional training was not providing a comparable improvement in generalization.
+
+### Early Stopping
+
+Early stopping monitors validation performance and stops training when the monitored metric no longer improves.
+
+The implementation uses:
 
 ```python
-activation=tf.nn.relu
+tf.keras.callbacks.EarlyStopping(
+    monitor="val_loss",
+    patience=5,
+    restore_best_weights=True
+)
 ```
 
-for its 20-neuron hidden layer.
+* `monitor="val_loss"` monitors the loss on the validation data.
+* `patience=5` allows five consecutive epochs without improvement before stopping.
+* `restore_best_weights=True` restores the weights from the epoch with the lowest monitored loss.
 
----
+The maximum epoch count can remain at 50; early stopping determines whether training should finish sooner.
 
-# Output Layer
+**Evaluation note:** The current implementation uses the 10,000-image test split returned by Fashion-MNIST as the data monitored during training. For a rigorous final evaluation, a separate validation set should be created from the training data, with the official test set reserved for the final evaluation.
 
-The final layer contains:
+### Saved Outputs
 
-```text
-10 neurons
-```
+The CNN implementation generates two visualizations:
 
-because there are 10 possible digit classes.
+**`fashion_mnist_predictions.png`**
 
-The neurons correspond to:
+Displays sample clothing images alongside their predicted and actual categories.
 
-```text
-0 → digit 0
-1 → digit 1
-2 → digit 2
-...
-9 → digit 9
-```
+**`fashion_mnist_training_accuracy.png`**
 
----
+Plots training accuracy and held-out dataset accuracy across epochs, making it easier to observe learning progress and identify a possible generalization gap.
 
-# Softmax
-
-The output layer uses the **Softmax** activation function.
-
-Softmax converts the model's output values into a probability distribution.
-
-For example:
-
-```text
-0 → 0.001
-1 → 0.002
-2 → 0.000
-3 → 0.004
-4 → 0.001
-5 → 0.003
-6 → 0.000
-7 → 0.989
-8 → 0.000
-9 → 0.000
-```
-
-The probabilities add up to approximately:
-
-```text
-1.0
-```
-
-The class with the highest probability is selected as the predicted class.
-
----
-
-# Classification
-
-**Classification** means assigning an input to one or more predefined categories.
-
-For MNIST:
-
-```text
-Input:
-handwritten image
-
-Output:
-one of 10 digit classes
-```
-
-This is a **multi-class classification** problem because there are more than two possible classes.
-
----
-
-# Probability
-
-A probability represents the model's estimated likelihood for a particular class.
-
-For example:
-
-```text
-digit 7 → 0.9989
-```
-
-means the model assigns approximately:
-
-```text
-99.89%
-```
-
-probability to class `7`.
-
-This is the model's prediction confidence, not a guarantee that the prediction is correct.
-
----
-
-# Argmax
-
-The model produces ten probabilities.
-
-`np.argmax()` finds the position of the largest value.
-
-For example:
-
-```text
-[0.01, 0.02, 0.90, 0.07]
-```
-
-The largest value is:
-
-```text
-0.90
-```
-
-at index:
-
-```text
-2
-```
-
-Therefore:
-
-```python
-np.argmax(...)
-```
-
-returns:
-
-```text
-2
-```
-
-For MNIST, the index directly corresponds to the predicted digit.
-
----
-
-# Loss Function for Classification
-
-Regression and classification use different loss functions.
-
-The MNIST model uses:
-
-```text
-sparse_categorical_crossentropy
-```
-
-This loss function is suitable when there are multiple classes and the labels are represented as integer class IDs.
-
-For example:
-
-```text
-7
-```
-
-rather than a one-hot vector such as:
-
-```text
-[0,0,0,0,0,0,0,1,0,0]
-```
-
-The loss measures how different the model's predicted probability distribution is from the correct class.
-
----
-
-# Optimizer — Adam
-
-The MNIST model uses:
-
-```text
-Adam
-```
-
-Adam is an optimization algorithm used to update neural-network parameters during training.
-
-It is designed to adapt the parameter update process using information from previous gradients.
-
-The important concept at this stage is:
-
-```text
-prediction
-    ↓
-loss
-    ↓
-gradients
-    ↓
-optimizer
-    ↓
-updated parameters
-```
-
----
-
-# Epoch
-
-An **epoch** represents one complete pass through the training dataset.
-
-The MNIST model is trained using:
-
-```python
-epochs=20
-```
-
-This means the training process goes through the training dataset repeatedly for 20 epochs.
-
----
-
-# Training
-
-Training is the process through which the neural network learns its parameters from labeled examples.
-
-The general process is:
-
-```text
-Input image
-    ↓
-Neural network
-    ↓
-Prediction
-    ↓
-Loss calculation
-    ↓
-Gradient calculation
-    ↓
-Optimizer updates parameters
-    ↓
-Repeat
-```
-
-This connects directly to the Gradient Descent project in the previous folder.
-
----
-
-# Prediction
-
-After training, the model can process previously unseen images.
-
-The code:
-
-```python
-classifications = model.predict(test_images)
-```
-
-generates probability distributions for the test images.
-
-For one image:
-
-```python
-classifications[0]
-```
-
-contains ten probability values corresponding to digits `0–9`.
-
----
-
-# Accuracy
-
-**Accuracy** measures the proportion of predictions that are correct.
-
-For example:
-
-```text
-95% accuracy
-```
-
-means approximately 95 out of every 100 evaluated examples were classified correctly.
-
-Accuracy is used as a metric to evaluate the classifier.
-
----
-
-# Regression vs Classification
+## Regression vs Classification
 
 | Feature           | Regression                | Classification                   |
 | ----------------- | ------------------------- | -------------------------------- |
-| Goal              | Predict a numerical value | Predict a class                  |
-| Example           | `y = 2x - 1`              | Digit `0–9`                      |
+| Goal              | Predict a numerical value | Predict a category               |
+| Example           | `y = 2x - 1`              | Digit or clothing category       |
 | Output            | Continuous value          | Class probabilities              |
-| Example loss      | MSE                       | Sparse categorical cross-entropy |
-| Output activation | Depends on task           | Softmax for this MNIST model     |
-| Project           | `first_neural_network.py` | `mnist_classification.py`        |
+| Example loss      | Mean Squared Error        | Sparse categorical cross-entropy |
+| Output activation | Depends on the task       | Softmax for these classifiers    |
 
----
+## Relationship to Previous Projects
 
-# Relationship to Previous Projects
-
-The learning progression is:
+The implementations build on the concepts introduced in the earlier machine-learning and gradient-descent projects.
 
 ```text
 Linear Regression
-      ↓
-Loss
-      ↓
+       |
+       v
+Loss Functions
+       |
+       v
 Gradient Descent
-      ↓
-Single Neural Network
-      ↓
-Multiple Neurons
-      ↓
-Hidden Layers
-      ↓
+       |
+       v
+Single-Layer Neural Network
+       |
+       v
+Multi-Layer Neural Networks
+       |
+       v
 Activation Functions
-      ↓
+       |
+       v
 Classification
-      ↓
-MNIST Digit Recognition
+       |
+       v
+CNNs and Image Classification
+       |
+       v
+Model Evaluation and Overfitting
 ```
 
-The underlying training idea remains the same:
+The underlying training process remains similar:
 
 ```text
-make prediction
-      ↓
-measure loss
-      ↓
-calculate gradients
-      ↓
-update parameters
-      ↓
-repeat
+Input
+  |
+  v
+Prediction
+  |
+  v
+Loss Calculation
+  |
+  v
+Gradient Calculation
+  |
+  v
+Parameter Updates
+  |
+  v
+Repeat
 ```
 
-The difference is that the model and task have become more complex.
+CNNs extend these fundamentals by learning spatial features from image data.
 
----
-
-# Technologies
+## Technologies Used
 
 * Python
-* NumPy
 * TensorFlow
 * Keras
+* NumPy
+* Matplotlib
 
----
+## Running the Implementations
 
-# Running the Projects
-
-Activate the virtual environment:
+Activate the project's virtual environment from the repository root:
 
 ```bash
 source .venv/Scripts/activate
 ```
 
-Run the first neural-network example:
+Run the regression implementation:
 
 ```bash
-python 03_Neural_Networks/first_neural_network.py
+python 03_Neural_Networks/Regression/first_regression_NN.py
 ```
 
 Run the MNIST classifier:
 
 ```bash
-python 03_Neural_Networks/mnist_classification.py
+python 03_Neural_Networks/Classification/mnist_classification.py
 ```
 
----
+Run the Fashion-MNIST CNN:
 
-# Key Concepts Learned
+```bash
+python 03_Neural_Networks/CNN/fashin_mnist_cnn.py
+```
 
-* Neural network
-* Neuron
-* Dense layer
-* Weight
-* Bias
-* Input layer
-* Hidden layer
-* Output layer
-* Activation function
-* ReLU
-* Softmax
+The CNN program trains the model, evaluates its performance, displays sample predictions, and saves the generated visualizations in the current working directory.
+
+## Key Concepts Learned
+
+* Neural networks and neurons
+* Dense layers
+* Weights and biases
+* Input, hidden, and output layers
+* Activation functions
+* ReLU and Softmax
+* Regression and classification
+* MNIST and Fashion-MNIST
+* Image pixels and normalization
 * Flattening
-* MNIST
-* Pixel
-* Normalization
-* Classification
-* Multi-class classification
-* Probability
-* Argmax
-* Loss function
+* Convolutional filters and feature maps
+* Max pooling
+* Loss functions
+* Mean Squared Error
 * Sparse categorical cross-entropy
-* Optimizer
-* Adam
-* Epoch
-* Accuracy
-* Prediction
-* Training
+* Optimizers and Adam
+* Epochs and training
+* Prediction probabilities and `argmax`
+* Accuracy and model evaluation
+* Overfitting and early stopping
+
+## Next Steps
+
+The next stages of this learning path will focus on model optimization, quantization, TensorFlow Lite, and embedded inference.
+
+These topics build toward the broader goal of deploying machine-learning models on resource-constrained hardware for **Edge AI and TinyML applications**.
