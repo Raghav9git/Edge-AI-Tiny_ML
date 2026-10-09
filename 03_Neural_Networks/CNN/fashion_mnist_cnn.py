@@ -103,17 +103,25 @@ model.compile(
     metrics=["accuracy"]
 )
 
-# Train the CNN using the training images and their labels.
-# One epoch is one complete pass through the training dataset.
-# Ten epochs means the model processes the training dataset ten times.
-# Validation data measures performance on images not used for training.
+
+# Stop training when validation loss stops improving.
+
+early_stopping = tf.keras.callbacks.EarlyStopping(
+    monitor="val_loss",
+    patience=5,
+    restore_best_weights=True
+)
+
+# Train the CNN with early stopping.
 
 history = model.fit(
     training_images,
     training_labels,
-    epochs=10,
-    validation_data=(validation_images, validation_labels)
+    epochs=50,
+    validation_data=(validation_images, validation_labels),
+    callbacks=[early_stopping]
 )
+
 
 # Evaluate the trained model on the held-out images.
 # Loss measures prediction error, while accuracy measures correct predictions.
